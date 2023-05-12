@@ -1,0 +1,791 @@
+/*
+  SECURITY SYSTEM
+
+  By: Vishesh G.
+*/
+
+// To operate the Liquid Crystal Display, we need to "#include" the liquid crystal library:
+#include <LiquidCrystal.h>
+#include <Keypad.h>
+
+//------------------------------|
+#define PWD1 '2' //-------------|
+#define PWD2 '5' //-------------|
+#define PWD3 '8' //-------------|
+#define PWD4 '0' //-------------|
+//------------------------------|
+
+const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+const byte rows = 4;
+const byte cols = 3;
+
+char hexkeypad[rows][cols] = { {'1','2','3'},
+                               {'4','5','6'},
+                               {'7','8','9'},
+                               {'B','0','A'}
+                             };
+byte rowspins[rows] = {52,50,48,46};
+byte colspins[cols] = {44,42,40};
+
+Keypad kpd = Keypad(makeKeymap(hexkeypad), rowspins, colspins, rows, cols);
+
+byte i = 0;
+int t;
+
+int E = 6;
+int D = 7;
+int C = 8;
+int G = 24;
+int F = 26;
+int A = 28;
+int B = 30;
+
+int buzzpin = 36;
+int sensor = 10;
+
+int red = 35;
+int yellow = 33;
+int green = 31;
+
+int keyNum = 0;
+
+int firstNum;
+int secondNum;
+int thirdNum;
+int fourthNum;
+
+void setup() 
+{
+  lcd.begin(16, 2);
+  lcd.clear();
+
+  Serial.begin(9600);
+  for (i = 0; i > 8; i++)
+    {
+     pinMode(i, OUTPUT);
+     }
+    pinMode(E, OUTPUT);
+  
+  pinMode(D, OUTPUT);
+  pinMode(C, OUTPUT);
+  pinMode(G, OUTPUT);
+  pinMode(F, OUTPUT);
+  pinMode(A, OUTPUT);
+  pinMode(B, OUTPUT);
+
+  pinMode(buzzpin, OUTPUT);
+  pinMode(red, OUTPUT);
+  pinMode(yellow, OUTPUT);
+  pinMode(green, OUTPUT);
+
+  pinMode(sensor, INPUT);
+
+  int t;
+
+  lcd.setCursor(0,0);
+  lcd.print("Security System");
+  lcd.setCursor(2,1);
+  lcd.print("By: Vishesh");
+  for(t = 0; t <= 5; t++)
+  {
+    cycle();
+  }
+
+  digitalWrite(buzzpin, HIGH);
+  all(1500);
+  digitalWrite(buzzpin, LOW);
+  
+  lcd.clear();
+  
+}
+
+void loop() 
+{
+  lcd.setCursor(3,0);
+  lcd.print("Press # To");
+  lcd.setCursor(2,1);
+  lcd.print("Enable Alarm");
+
+  delay(250);
+
+  waitForEnable();
+
+  timeToGo();
+  
+  motionOn();
+  
+  enterPassword();
+
+  again();
+}
+
+void again()
+{
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("CONGRATULATIONS!");
+  for (t = 0; t <= 4; t++)
+  {
+    cycle();
+  }
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("1 TO PLAY AGAIN");
+  lcd.setCursor(0, 1);
+  lcd.print("0 TO EXIT");
+  
+  while(1)
+  {
+    cycle();
+    char keypressed = kpd.getKey();
+    if (keypressed)
+    {
+      Serial.print("Key pressed is ");
+      Serial.println(keypressed);
+      delay(10);
+    }
+    switch (keypressed)
+    {
+      case '1':
+        digitalWrite(buzzpin, HIGH);
+        all(250);
+        digitalWrite(buzzpin, LOW);
+        lcd.clear();
+        lcd.setCursor(3, 0);
+        lcd.print("RESTARTING");
+        lcd.setCursor(4, 1);
+        lcd.print("PROGRAM.");
+        for (t = 0; t <= 3; t++)
+        {
+          cycle();
+        }
+        goto againbro;
+        break;
+      case '0':
+        digitalWrite(buzzpin, HIGH);
+        all(250);
+        digitalWrite(buzzpin, LOW);
+        lcd.clear();
+        lcd.setCursor(3, 0);
+        lcd.print("THANKS FOR");
+        lcd.setCursor(4, 1);
+        lcd.print("PLAYING!");
+        for (t = 0; t <= 7; t++)
+        {
+          cycle();
+        }
+        exit(0);
+        break;
+    }
+  }
+  againbro:
+  lcd.clear();
+  digitalWrite(buzzpin, LOW);
+  return;
+}
+
+void enterPassword()
+{
+  digitalWrite(buzzpin, HIGH);
+  all(250);
+  digitalWrite(buzzpin, LOW);
+  lcd.clear();
+
+  for (t = 0; t <= 1; t++)
+  {
+    lcd.setCursor(1, 0);
+    lcd.print("ENTER PASSWORD");
+    cycle();
+    lcd.clear();
+    delay(250);
+  }
+
+  lcd.setCursor(1, 0);
+  lcd.print("ENTER PASSWORD");
+  lcd.setCursor(0, 1);
+  lcd.print("COPS ALERTED IN");
+
+  for (t = 0; t <= 999; t++)
+  {
+    switch (t)
+    {
+      case 100:
+        digitalWrite(buzzpin, HIGH);
+        nine();
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        t + 200;
+        break;
+      case 200:
+        digitalWrite(buzzpin, HIGH);
+        eight();
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        t + 200;
+        break;
+      case 300:
+        digitalWrite(buzzpin, HIGH);
+        seven();
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        t + 200;
+        break;
+      case 400:
+        digitalWrite(buzzpin, HIGH);
+        six();
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        t + 200;
+        break;
+      case 500:
+        digitalWrite(buzzpin, HIGH);
+        five();
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        t + 200;
+        break;
+      case 600:
+        digitalWrite(buzzpin, HIGH);
+        four();
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        t + 200;
+        break;
+      case 700:
+        digitalWrite(buzzpin, HIGH);
+        three();
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        t + 200;
+        break;
+      case 800:
+        digitalWrite(buzzpin, HIGH);
+        two();
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        t + 200;
+        break;
+      case 900:
+        digitalWrite(buzzpin, HIGH);
+        one();
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        t + 200;
+        break;
+      case 999:
+        zero();
+        digitalWrite(buzzpin, HIGH);
+        lcd.clear();
+        lcd.setCursor(2, 0);
+        lcd.print("NO PASSWORD.");
+        lcd.setCursor(1, 1);
+        lcd.print("POLICE ALERTED.");
+        all(3000);
+        digitalWrite(buzzpin, LOW);
+        none();
+        exit(0);
+        break;
+    }
+    
+    char keypressed = kpd.getKey();
+    if (keypressed)
+    {
+      Serial.print("Key pressed is ");
+      Serial.println(keypressed);
+      keyNum++;
+      Serial.println(keyNum);
+      Serial.println(firstNum);
+      Serial.println(secondNum);
+      delay(10);
+    }
+    if (keyNum == 1 && keypressed == PWD1)
+    {
+      firstNum = true;
+    }
+    if (keyNum == 2 && keypressed == PWD2)
+    {
+      secondNum = true;
+    }
+    if (keyNum == 3 && keypressed == PWD3)
+    {
+      thirdNum = true;
+    }
+    if (keyNum == 4 && keypressed == PWD4)
+    {
+      fourthNum = true;
+    }
+    if (firstNum == true && secondNum == true && thirdNum == true && fourthNum == true)
+    {
+      digitalWrite(green, HIGH);
+      none();
+      lcd.clear();
+      lcd.setCursor(4, 0);
+      lcd.print("CORRECT");
+      lcd.setCursor(4, 1);
+      lcd.print("PASSWORD.");
+
+      for (t = 0; t <= 9; t++)
+      {
+        digitalWrite(red, HIGH);
+        digitalWrite(green, HIGH);
+        delay(200);
+        digitalWrite(red, LOW);
+        digitalWrite(green, LOW);
+        flash(yellow, 200);
+      }
+
+      firstNum = false;
+      secondNum = false;
+      thirdNum = false;
+      fourthNum = false;
+      keyNum = 0;
+      
+      digitalWrite(buzzpin, LOW);
+      lcd.clear();
+      goto finallyman;
+    }
+    else if (keyNum >= 4)
+    {
+      none();
+      digitalWrite(buzzpin, HIGH);
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("WRONG PASSWORD.");
+      lcd.setCursor(1, 1);
+      lcd.print("POLICE ALERTED.");
+      all(3000);
+      digitalWrite(buzzpin, LOW);
+
+      exit(0);
+    }
+    delay(10);
+  }
+finallyman:
+  return;
+}
+
+void motionOn()
+{
+  digitalWrite(green, HIGH);
+  lcd.clear();
+  lcd.setCursor(4, 0);
+  lcd.print("Alarm On.");
+
+  while (1)
+  {
+    bool sensorval = digitalRead(sensor);
+    Serial.println(sensorval);
+
+    if (sensorval == HIGH)
+    {
+      while (1)
+      {
+        digitalWrite(green, LOW);
+        lcd.clear();
+        lcd.setCursor(4, 0);
+        lcd.print("INTRUDER");
+        lcd.setCursor(4, 1);
+        lcd.print("DETECTED");
+        int t;
+
+        for (t = 0; t <= 9; t++)
+        {
+          digitalWrite(red, HIGH);
+          digitalWrite(buzzpin, HIGH);
+          delay(200);
+          digitalWrite(red, LOW);
+          digitalWrite(buzzpin, LOW);
+          delay(200);
+        }
+        lcd.clear();
+        goto getmeoutofhere;
+      }
+    }
+
+  }
+getmeoutofhere:
+  return;
+}
+
+void timeToGo()
+{
+  lcd.clear();
+  lcd.setCursor(2, 0);
+  lcd.print("Please Vacate");
+  lcd.setCursor(3, 1);
+  lcd.print("The Area!");
+
+  int t;
+
+  digitalWrite(buzzpin, HIGH);
+  delay(500);
+  digitalWrite(buzzpin, LOW);
+
+  for (t = 0; t <= 3; t++)
+  {
+    cycle();
+  }
+
+  lcd.clear();
+  lcd.setCursor(3, 0);
+  lcd.print("You have");
+  lcd.setCursor(2, 1);
+  lcd.print("Seconds Left");
+
+  for (t = 5; t >= 0; t--)
+  {
+    lcd.setCursor(12, 0);
+    lcd.print(t);
+
+    digitalWrite(buzzpin, HIGH);
+    delay(200);
+    digitalWrite(buzzpin, LOW);
+    cycle();
+    delay(200);
+  }
+
+  digitalWrite(buzzpin, HIGH);
+
+  lcd.clear();
+  lcd.setCursor(4, 0);
+  lcd.print("Alarm On!");
+  cycle();
+  digitalWrite(buzzpin, LOW);
+  cycle();
+  all(1000);
+  lcd.clear();
+}
+
+void waitForEnable()
+{
+  int t;
+  for (t = 0; t <= 999; t++)
+  {
+    switch (t)
+    {
+      case 100:
+        digitalWrite(buzzpin, HIGH);
+        nine();
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        t + 200;
+        break;
+      case 200:
+        digitalWrite(buzzpin, HIGH);
+        eight();
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        t + 200;
+        break;
+      case 300:
+        digitalWrite(buzzpin, HIGH);
+        seven();
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        t + 200;
+        break;
+      case 400:
+        digitalWrite(buzzpin, HIGH);
+        six();
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        t + 200;
+        break;
+      case 500:
+        digitalWrite(buzzpin, HIGH);
+        five();
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        t + 200;
+        break;
+      case 600:
+        digitalWrite(buzzpin, HIGH);
+        four();
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        t + 200;
+        break;
+      case 700:
+        digitalWrite(buzzpin, HIGH);
+        three();
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        t + 200;
+        break;
+      case 800:
+        digitalWrite(buzzpin, HIGH);
+        two();
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        t + 200;
+        break;
+      case 900:
+        digitalWrite(buzzpin, HIGH);
+        one();
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        t + 200;
+        break;
+      case 999:
+        zero();
+        digitalWrite(buzzpin, HIGH);
+        lcd.clear();
+        lcd.setCursor(4, 0);
+        lcd.print("Time's Up!");
+        lcd.setCursor(0, 1);
+        lcd.print("Restart Program.");
+        all(3000);
+        digitalWrite(buzzpin, LOW);
+        none();
+
+        exit(0);
+        break;
+    }
+    
+    char keypressed = kpd.getKey();
+    if (keypressed)
+    {
+      Serial.print("Key pressed is ");
+      Serial.println(keypressed);
+    }
+    if (keypressed == 'A')
+    {
+      digitalWrite(buzzpin, HIGH);
+      none();
+      lcd.clear();
+      lcd.setCursor(5, 0);
+      lcd.print("Alarm");
+      lcd.setCursor(4, 1);
+      lcd.print("Enabled.");
+      delay(1000);
+      digitalWrite(buzzpin, LOW);
+      all(2000);
+      lcd.clear();
+      goto keepmoving;
+    }
+
+    delay(10);
+  }
+keepmoving:
+  return;
+}
+
+
+/*
+  char keypressed = kpd.getKey();
+  if (keypressed)
+  {
+    Serial.print("Key pressed is ");
+    Serial.println(keypressed);
+    switch (keypressed)
+    {
+      case '1':
+        one();
+        delay(200);
+        none();
+        break;
+      case '2':
+        two();
+        delay(200);
+        none();
+        break;
+      case '3':
+        three();
+        delay(200);
+        none();
+        break;
+      case '4':
+        four();
+        delay(200);
+        none();
+        break;
+      case '5':
+        five();
+        delay(200);
+        none();
+        break;
+      case '6':
+        six();
+        delay(200);
+        none();
+        break;
+      case '7':
+        seven();
+        delay(200);
+        none();
+        break;
+      case '8':
+        eight();
+        delay(200);
+        none();
+        break;
+      case '9':
+        nine();
+        delay(200);
+        none();
+        break;
+      case '0':
+        zero();
+        delay(200);
+        none();
+        break;
+      case 'B':
+        digitalWrite(buzzpin, HIGH);
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        break;
+    }
+  }
+  if (keypressed = false)
+  {
+    none();
+   }
+*/
+
+void flash(int LED, int flashtime)
+{
+  digitalWrite(LED, HIGH);
+  delay(flashtime);
+  digitalWrite(LED, LOW);
+}
+
+void cycle()
+{
+  flash(red, 200);
+  flash(yellow, 200);
+  flash(green, 200);
+}
+
+void all(int flashtime)
+{
+  digitalWrite(red, HIGH);
+  digitalWrite(yellow, HIGH);
+  digitalWrite(green, HIGH);
+  delay(flashtime);
+  digitalWrite(red, LOW);
+  digitalWrite(yellow, LOW);
+  digitalWrite(green, LOW);
+}
+
+void one()
+{
+  digitalWrite(E, LOW);
+  digitalWrite(D, LOW);
+  digitalWrite(C, HIGH);
+  digitalWrite(G, LOW);
+  digitalWrite(F, LOW);
+  digitalWrite(A, LOW);
+  digitalWrite(B, HIGH);
+}
+
+void two()
+{
+  digitalWrite(E, HIGH);
+  digitalWrite(D, HIGH);
+  digitalWrite(C, LOW);
+  digitalWrite(G, HIGH);
+  digitalWrite(F, LOW);
+  digitalWrite(A, HIGH);
+  digitalWrite(B, HIGH);
+}
+
+void three()
+{
+  digitalWrite(E, LOW);
+  digitalWrite(D, HIGH);
+  digitalWrite(C, HIGH);
+  digitalWrite(G, HIGH);
+  digitalWrite(F, LOW);
+  digitalWrite(A, HIGH);
+  digitalWrite(B, HIGH);
+}
+
+void four()
+{
+  digitalWrite(E, LOW);
+  digitalWrite(D, LOW);
+  digitalWrite(C, HIGH);
+  digitalWrite(G, HIGH);
+  digitalWrite(F, HIGH);
+  digitalWrite(A, LOW);
+  digitalWrite(B, HIGH);
+}
+
+void five()
+{
+  digitalWrite(E, LOW);
+  digitalWrite(D, HIGH);
+  digitalWrite(C, HIGH);
+  digitalWrite(G, HIGH);
+  digitalWrite(F, HIGH);
+  digitalWrite(A, HIGH);
+  digitalWrite(B, LOW);
+}
+
+void six()
+{
+  digitalWrite(E, HIGH);
+  digitalWrite(D, HIGH);
+  digitalWrite(C, HIGH);
+  digitalWrite(G, HIGH);
+  digitalWrite(F, HIGH);
+  digitalWrite(A, HIGH);
+  digitalWrite(B, LOW);
+}
+
+void seven()
+{
+  digitalWrite(E, LOW);
+  digitalWrite(D, LOW);
+  digitalWrite(C, HIGH);
+  digitalWrite(G, LOW);
+  digitalWrite(F, LOW);
+  digitalWrite(A, HIGH);
+  digitalWrite(B, HIGH);
+}
+
+void eight()
+{
+  digitalWrite(E, HIGH);
+  digitalWrite(D, HIGH);
+  digitalWrite(C, HIGH);
+  digitalWrite(G, HIGH);
+  digitalWrite(F, HIGH);
+  digitalWrite(A, HIGH);
+  digitalWrite(B, HIGH);
+}
+
+void nine()
+{
+  digitalWrite(E, LOW);
+  digitalWrite(D, HIGH);
+  digitalWrite(C, HIGH);
+  digitalWrite(G, HIGH);
+  digitalWrite(F, HIGH);
+  digitalWrite(A, HIGH);
+  digitalWrite(B, HIGH);
+}
+
+void zero()
+{
+  digitalWrite(E, HIGH);
+  digitalWrite(D, HIGH);
+  digitalWrite(C, HIGH);
+  digitalWrite(G, LOW);
+  digitalWrite(F, HIGH);
+  digitalWrite(A, HIGH);
+  digitalWrite(B, HIGH);
+}
+
+void none()
+{
+  digitalWrite(E, LOW);
+  digitalWrite(D, LOW);
+  digitalWrite(C, LOW);
+  digitalWrite(G, LOW);
+  digitalWrite(F, LOW);
+  digitalWrite(A, LOW);
+  digitalWrite(B, LOW);
+}
