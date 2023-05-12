@@ -1,0 +1,74 @@
+
+/*
+  Temperature Sensor - Alarm and Spectrum RGB LED
+  
+  By: Vishesh G.
+*/
+
+// Use constant integers to establish the pins for each LED, sensor, and buzzer
+
+const int temperaturePin = 0;
+const int buzzer = 2;
+const int redpin = 9;
+const int bluepin = 10;
+
+// Use void setup() to write a function that only runs once.
+// This begins receiving data in the serial monitor.
+
+void setup()
+{
+  Serial.begin(9600);
+}
+
+// Use void loop() to write a function that runs as long as the Arduino has power.
+// This loop function drives the temperature sensor, and sends power signals to the buzzer and LEDs. 
+// This loop calls a function "getVoltage();" that reads the temperature sensor and converts it to its true voltage. 
+// This function is defined later on in the code.
+// This loop uses the voltage to get degrees Celsius and Fahrenheit.
+// Then, it uses "if/else" statements to turn on the buzzer at certain thresholds.
+// The LEDs are programmed with specific values so that the light changes based on the temperature.
+// In warmer temperatures, the red LED gets brighter and blue gets dimmer.
+// In colder temperatures, the red LED gets dimmer and blue gets brighter. 
+// This creates a spectrum that represents the ambient temperature.
+// This also sends the data to the serial monitor for viewing and debugging.
+
+void loop()
+{
+  float voltage, degreesC, degreesF;
+
+  voltage = getVoltage(temperaturePin);
+
+  degreesC = (voltage - 0.5) * 100.0;
+
+  degreesF = degreesC * (9.0 / 5.0) + 32.0;
+
+  Serial.print("voltage: ");
+  Serial.print(voltage);
+  Serial.print("  deg C: ");
+  Serial.print(degreesC);
+  Serial.print("  deg F: ");
+  Serial.println(degreesF);
+
+  if((degreesC >= 100) || (degreesC <= -30))
+  {
+    analogWrite(buzzer, 200);
+  }
+  else
+  {
+    analogWrite(buzzer, 0);
+  }
+
+  analogWrite(redpin, (voltage * 75));
+  analogWrite(bluepin, (10/voltage));
+
+}
+
+// This function reads the signal from the analog pin and turns it into its true voltage.
+// Its parameter is defined as the pin it is reading, which is A0 in this case.
+// This is a "float" function, and not "void" because it returns a value that is not an integer.
+// "return" is used to create the value and send it back to the main loop. 
+
+float getVoltage(int pin)
+{
+  return (analogRead(pin) * 0.004882814);
+}

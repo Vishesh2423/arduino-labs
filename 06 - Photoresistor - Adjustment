@@ -1,0 +1,94 @@
+/*
+  Photoresistor - 3 LEDs
+
+  By: Vishesh G.
+*/
+
+// Use constant integers to establish the pins for each LED and sensor
+
+const int sensorPin = 0;
+const int lowledPin = 9;
+const int mediumledPin = 10;
+const int highledPin = 11;
+
+// Use global variables to set up the light level
+
+int lightLevel, high = 0, low = 1023;
+
+// Use void setup() to write a function that only runs once.
+// This identifies all the LED pins as outputs.
+// This also begins receiving data in the serial monitor.
+
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(lowledPin, OUTPUT);
+  pinMode(mediumledPin, OUTPUT);
+  pinMode(highledPin, OUTPUT);
+}
+
+// Use void loop() to write a function that runs as long as the Arduino has power.
+// This loop function drives the photoresistor.
+// This loop calls a function "autoTune();" that sets the resistor's limits based on its light level.
+// It then uses the values it receives to turn on LEDs based on the level of light the photocell gets.
+// In lots of light, only one LED turns on.
+// In less light, only two LEDs are on.
+// In the least amount of light, all three LEDs turn on.
+// Each "if" statement is followed with an "else" to ensure LEDs stay off until they need to turn on.
+
+void loop()
+{
+  lightLevel = analogRead(sensorPin);
+
+  autoTune();
+
+  if (lightLevel <= 85)
+  {
+    digitalWrite(lowledPin, HIGH);
+  }
+  else
+  {
+    digitalWrite(lowledPin, LOW);
+  }
+
+  if ((lightLevel >= 86) && (lightLevel <= 170))
+  {
+    digitalWrite(mediumledPin, HIGH);
+  }
+  else
+  {
+    digitalWrite(mediumledPin, LOW);
+  }
+
+  if (lightLevel >= 171)
+  {
+    digitalWrite(highledPin, HIGH);
+  }
+  else
+  {
+    digitalWrite(highledPin, LOW);
+  }
+
+}
+
+// This function tunes the photoresistor to ensure the values it sends out fall within our PWM limits.
+// By using this, the resistor becomes a lot more accurate and efficient.
+// The values in the "map" function can be tweaked to adjust the sensitivity of the photocell.
+// This also sends the data to the serial monitor for viewing and debugging.
+
+void autoTune()
+{
+  if (lightLevel < low)
+  {
+    low = lightLevel;
+  }
+
+  if (lightLevel > high)
+  {
+    high = lightLevel;
+  }
+
+  lightLevel = map(lightLevel, low + 10, high - 10, 0, 255);
+  lightLevel = constrain(lightLevel, 0, 255);
+  Serial.println(lightLevel);
+}

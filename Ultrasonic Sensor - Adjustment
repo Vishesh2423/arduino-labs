@@ -1,0 +1,82 @@
+/*
+  Ultrasonic Sensor - Adjustment
+
+  By: Vishesh G.
+*/
+
+// To operate the Ultrasonic Sensor, we need to "#include" its library:
+#include <NewPing.h>
+
+// Use "#define" to establish integers during the compilation of the code.
+#define TRIGGER_PIN 12
+#define ECHO_PIN 11
+#define MAX_DISTANCE 48
+
+// Declare the pin numbers for the three colours of LEDs.
+int redpin = 2;
+int yellowpin = 3;
+int greenpin = 4;
+
+// Use the "sonar" function from the library to set up the Ultrasonic Sensor.
+NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
+
+// Use void setup() to write a function that only runs once.
+// This begins serial data transmission.
+// This function also declare the LEDs as outputs and turns them all off.
+
+void setup()
+{
+  Serial.begin(9600);
+
+  pinMode(redpin, OUTPUT);
+  pinMode(yellowpin, OUTPUT);
+  pinMode(greenpin, OUTPUT);
+
+  digitalWrite(redpin, LOW);
+  digitalWrite(yellowpin, LOW);
+  digitalWrite(greenpin, LOW);
+
+}
+
+// Use void loop() to write a function that runs as long as the Arduino has power.
+// This loop function collects data from the sensor and establishes it as an "unsigned integer"
+// It then prints that data in the serial monitor with the suffix "cm"
+// This function also drives the 3 sets of LEDs
+// Using "if/else" statements, this function declares distance thresholds that determine which LEDs turn on.
+// If the distance is really short, all lights turn on.
+
+void loop()
+{
+  delay(250);
+  unsigned int distance = sonar.ping_cm();
+
+  if (distance <= 8)
+  {
+    digitalWrite(redpin, HIGH);
+  }
+  else
+  {
+    digitalWrite(redpin, LOW);
+  }
+
+  if (distance <= 16)
+  {
+    digitalWrite(yellowpin, HIGH);
+  }
+  else
+  {
+    digitalWrite(yellowpin, LOW);
+  }
+
+  digitalWrite(greenpin, HIGH);
+
+  if (distance == 0)
+  {
+    digitalWrite(greenpin, HIGH);
+    digitalWrite(yellowpin, HIGH);
+    digitalWrite(redpin, LOW);
+  }
+
+  Serial.print(distance);
+  Serial.println("cm");
+}

@@ -1,0 +1,73 @@
+/*
+  Touch Sensor - Adjustment
+
+  By: Vishesh G.
+*/
+
+// Declare the pin numbers for the three colours of LEDs and the sensor
+int in = 12;
+int redpin = 2;
+int yellowpin = 3;
+int greenpin = 4;
+
+// Declare an integer for the state of the sensor and the elapsed time
+int r;
+int t = 0;
+
+// Use void setup() to write a function that only runs once.
+// This function declares the LEDs as outputs and the sensor as an input.
+
+void setup()
+{
+  pinMode(in, INPUT);
+  pinMode(redpin, OUTPUT);
+  pinMode(yellowpin, OUTPUT);
+  pinMode(greenpin, OUTPUT);
+}
+
+// Use void loop() to write a function that runs as long as the Arduino has power.
+// This loop function collects boolean data from the sensor and assigns it to "r"
+// If the touch sensor is not being touched, all LEDs are off
+// If the sensor is touched briefly, only the green LEDs turn on
+// If the sensor is touched for a little longer, the yellow LEDs turn on as well
+// If the sensor is touched for a while, the red LEDs turn on.
+// If the sensor is touched for too long, all the LEDs will turn off.
+// In this manner, the touch sensor drives the LEDs based on how long it is held down. 
+
+void loop()
+{
+  r = digitalRead(in);
+
+  if (r == LOW)
+  {
+    digitalWrite(redpin, LOW);
+    digitalWrite(yellowpin, LOW);
+    digitalWrite(greenpin, LOW);
+    t = 0;
+  }
+
+  if (r == HIGH)
+  {
+    digitalWrite(greenpin, HIGH);
+    t++;
+    
+    if (t >= 10)
+    {
+      digitalWrite(yellowpin, HIGH);
+      if (t >= 20)
+      {
+        digitalWrite(redpin, HIGH);
+      }
+    }
+    
+    if (t >= 50)
+    {
+      digitalWrite(redpin, LOW);
+      digitalWrite(yellowpin, LOW);
+      digitalWrite(greenpin, LOW);
+      t = 0;
+    }
+    delay(100);
+    
+  }
+}

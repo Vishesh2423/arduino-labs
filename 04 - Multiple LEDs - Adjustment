@@ -1,0 +1,72 @@
+/*
+  Multiple LEDs - Traffic Light System
+
+  By: Vishesh G.
+*/
+
+// Use an array to identify the various LED pins
+int ledPins[] = {8,9,10,11,12,13};
+
+// Use void setup() to write a function that only runs once. 
+// This identifies all the LED pins as outputs.
+// By using the array, the "pinMode();" function can be applied
+// to every value in the array without having to write out each line. 
+
+void setup()
+{
+  int index;
+
+  for(index = 0; index <= 5; index++)
+  {
+    pinMode(ledPins[index],OUTPUT);
+  }
+}
+
+// Use void loop() to write a function that runs as long as the Arduino has power.
+// This loop function runs the traffic light system.
+// It uses the "for()" tool to help save time and make the code more efficient
+// Each set of lights on the traffic circuit is assigned a value in the integer "index".
+// Since this is based on the order of the pins established earlier, we use that 
+// order to help cycle through the various lights in the order we want them. 
+
+void loop()
+{
+  traffic();
+}
+
+void traffic()
+{
+  int index;
+  int delayTime = 1500; 
+
+  digitalWrite(ledPins[3], HIGH);   
+  for(index = 0; index <= 2; index++) 
+  {
+    digitalWrite(ledPins[index], HIGH);   
+    delay(delayTime);
+    digitalWrite(ledPins[index], LOW);    
+    index++;
+  }
+  for(index = 2; index >= 0; index--)
+  {
+    digitalWrite(ledPins[index], HIGH);  
+    delay(delayTime);
+    digitalWrite(ledPins[index], LOW);     
+  }
+  digitalWrite(ledPins[3], LOW);   
+  digitalWrite(ledPins[0], HIGH);   
+  for(index = 3; index <= 5; index++) 
+  {
+    digitalWrite(ledPins[index], HIGH);  
+    delay(delayTime);
+    digitalWrite(ledPins[index], LOW);   
+    index++;
+  }
+  for(index = 5; index >= 3; index--)
+  {
+    digitalWrite(ledPins[index], HIGH);  
+    delay(delayTime);
+    digitalWrite(ledPins[index], LOW);  
+  }
+  digitalWrite(ledPins[0], LOW);  
+}

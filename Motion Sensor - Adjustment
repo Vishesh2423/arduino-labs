@@ -1,0 +1,65 @@
+/*
+  Motion Sensor - Adjustment
+
+  By: Vishesh G.
+*/
+
+// Declare the pin numbers for the LEDs, buzzer, and sensor.
+// Declare the time interval for the red LEDs and the buzzer.
+const int greenled = 3;
+const int sensor = 12;
+const int redled = 4;
+const int buzzer = 6;
+const int timeDelay = 500;
+
+// Use void setup() to write a function that only runs once.
+// This function declares the LEDs and buzzer as outputs and the sensor as an input.
+// This function also begins receiving serial data.
+
+void setup()
+{
+  pinMode(greenled, OUTPUT);
+  pinMode(redled, OUTPUT);
+  pinMode(buzzer, OUTPUT);
+  pinMode(sensor, INPUT);
+  Serial.begin(9600);
+}
+
+// Use void loop() to write a function that runs as long as the Arduino has power.
+// This loop function collects boolean data from the sensor and assigns it to "sensorval"
+// If the motion sensor does not detect anything, the green LEDs turn on
+// If the motion sensor detects motion, it alternates between the red LEDs and the buzzer.
+// In this manner, the sensor drives the LEDs and buzzer based on the motion around it.
+
+void loop()
+{
+  int sensorval = digitalRead(sensor);
+  Serial.println(sensorval);
+
+  if (sensorval == HIGH) {
+
+    digitalWrite(redled, HIGH);
+
+    delay(timeDelay);
+
+    digitalWrite(redled, LOW);
+    digitalWrite(buzzer, HIGH);
+
+    delay(timeDelay);
+
+    digitalWrite(buzzer, LOW);
+
+  }
+  else {
+    digitalWrite(redled, LOW);
+    digitalWrite(buzzer, LOW);
+  }
+
+  if (sensorval == LOW) {
+    digitalWrite(greenled, HIGH);
+  }
+  else {
+    digitalWrite(greenled, LOW);
+  }
+
+}

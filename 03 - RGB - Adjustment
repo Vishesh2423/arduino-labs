@@ -1,0 +1,84 @@
+/*
+  RGB Light with Fader
+
+  By: Vishesh G.
+*/
+
+// Use integers to identify the pin numbers for various components
+
+int redpin = 11;
+int greenpin = 9;
+int bluepin = 10;
+int redbutton = 8;
+int greenbutton = 7;
+int bluebutton = 6;
+int resetbutton = 4;
+
+int red = 0;
+int green = 0;
+int blue = 0;
+
+// Use void setup() to write a function that only runs once. 
+// This identifies the 3 LED pins as outputs.
+
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(redpin, OUTPUT);
+  pinMode(greenpin, OUTPUT);
+  pinMode(bluepin, OUTPUT);
+  pinMode(redbutton, INPUT_PULLUP);
+  pinMode(greenbutton, INPUT_PULLUP);
+  pinMode(bluebutton, INPUT_PULLUP);
+  pinMode(resetbutton, INPUT_PULLUP);
+}
+
+// Use void loop() to write a function that runs as long as the Arduino has power.
+// This loop function reads and prints information information from the buttons
+// It uses that value to increase the intensity of the respective colours in the RGB LED
+// The reset button turns off all three of the colours
+
+void loop()
+{
+  
+if (digitalRead(redbutton) == LOW)
+{
+red ++;
+if (red > 255)
+red = 0;
+Serial.println("Red");
+Serial.println(red);
+}
+
+if (digitalRead(greenbutton) == LOW)
+{
+green ++;
+if (green > 255)
+green = 0;
+Serial.println("Green");
+Serial.println(green);
+}
+  
+if (digitalRead(bluebutton) == LOW)
+{
+blue ++;
+if (blue > 255)
+blue = 0;
+Serial.println("Blue");
+Serial.println(blue);
+}
+  
+if(digitalRead(resetbutton) == LOW)
+{   
+  red = 0;
+  green = 0; 
+  blue = 0; 
+  Serial.println("Colours Cleared"); 
+}
+  
+analogWrite(redpin, red);
+analogWrite(greenpin, green);
+analogWrite(bluepin, blue);
+delay(10);
+   
+}

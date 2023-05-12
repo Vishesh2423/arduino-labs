@@ -1,0 +1,49 @@
+/*
+  This is a modified version that makes 3 LEDs blink instead of only 1. 
+
+  By: Vishesh Garg
+*/
+
+int potPosition;
+
+// Use void setup() to write a function that only runs once. 
+// This  setup function starts receiving serial data from the potentiometer at a speed of 9600 baud.
+// It also identifies the 3 LED pins as outputs.
+
+void setup()
+{
+  Serial.begin(9600);      
+
+  pinMode(13, OUTPUT);    
+  pinMode(12, OUTPUT);    
+  pinMode(11, OUTPUT);    
+}
+
+// Use void loop() to write a function that runs as long as the Arduino has power.
+// This loop function reads and prints the information from the potentiometer
+// It uses that value to alter the delay time between the LED blinks
+// Since it loops, it cycles through all three lights
+
+void loop()
+{
+  potPosition = analogRead(A0);   
+  Serial.println(potPosition);    
+
+  digitalWrite(13, HIGH);        
+  delay(potPosition);             
+
+  digitalWrite(13, LOW);
+  delay(potPosition);              
+
+  digitalWrite(12, HIGH);      
+  delay(potPosition);              
+
+  digitalWrite(12, LOW);
+  delay(potPosition);              
+
+  digitalWrite(11, HIGH);        
+  delay(potPosition);            
+
+  digitalWrite(11, LOW);         
+  delay(potPosition);            
+}

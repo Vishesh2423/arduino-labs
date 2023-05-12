@@ -1,0 +1,47 @@
+/*
+  LCD - Serial Data Transmission
+
+  By: Vishesh G.
+*/
+
+// To operate the Liquid Crystal Display, we need to "#include" the liquid crystal library:
+#include <LiquidCrystal.h>
+
+// Use constant integers to establish the connections for the LCD.
+// Multiple integers can be established in the same command if they are seperated by a comma.
+
+const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+// Use void setup() to write a function that only runs once.
+// This sets up the LCD as a 16x2 display.
+// This also begins receiving and transmitting information through the serial monitor.
+
+void setup() 
+{
+  lcd.begin(16, 2);
+
+  Serial.begin(9600);
+}
+
+// Use void loop() to write a function that runs as long as the Arduino has power.
+// This loop function reads the data sent through the serial monitor and displays it on the LCD.
+// After setting the cursor, it checks if there is any serial data available.
+// "if" there is, then the LCD is cleared.
+// Along with that, while serial data is available, the LCD will display it
+// As soon as there is no new serial data, the "if" loop becomes invalid and the program is static until there is new data.
+// This acts as a "printer", where the data is entered through an input (serial monitor) and displayed through an output (LCD).
+
+void loop() 
+{
+  lcd.setCursor(0,1);
+  if (Serial.available()) 
+  {
+    delay(100);
+    lcd.clear();
+    while (Serial.available() > 0) 
+    {
+      lcd.write(Serial.read());
+    }
+  }
+}

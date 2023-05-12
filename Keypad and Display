@@ -1,0 +1,296 @@
+/*
+  Keypad and 7 Segment Display
+
+  By: Vishesh G.
+*/
+
+// To operate the keypad, we need to "#include" its library:
+#include <Keypad.h>
+
+// Use the "constant byte" function to establish the number of rows and columns in the keypad
+const byte rows = 4;
+const byte cols = 3;
+
+// Create the character "hexkeypad" by creating two arrays and assigning values to each button
+char hexkeypad[rows][cols] = { {'1','2','3'},
+                               {'4','5','6'},
+                               {'7','8','9'},
+                               {'B','0',' '}
+                             };
+
+// Assign the pin numbers to each of the row pins and column pins using an array
+byte rowspins[rows] = {12,11,10,13};
+byte colspins[cols] = {9,8,7};
+
+// Using the "kpd" function from the library, map out the keypad
+Keypad kpd = Keypad(makeKeymap(hexkeypad), rowspins, colspins, rows, cols);
+
+// Set up "i" as a blank byte that will be used to receive data
+byte i = 0;
+
+// Declare the pin numbers for each LED on the seven segment display.
+// Declare the pin number for the peizo buzzer.
+int E = 6;
+int D = 5;
+int C = 4;
+int G = A0;
+int F = A1;
+int A = A3;
+int B = A2;
+int buzzpin = A4;
+
+// Use void setup() to write a function that only runs once.
+// This begins serial data transmission.
+// This function also declare the LEDs in the display as outputs.
+// This function also establishes the buzzer as an output.
+
+void setup()
+{
+  Serial.begin(9600);
+
+  pinMode(E, OUTPUT);
+  pinMode(D, OUTPUT);
+  pinMode(C, OUTPUT);
+  pinMode(G, OUTPUT);
+  pinMode(F, OUTPUT);
+  pinMode(A, OUTPUT);
+  pinMode(B, OUTPUT);
+
+  pinMode(buzzpin, OUTPUT);
+}
+
+// Use void loop() to write a function that runs as long as the Arduino has power.
+// This loop function drives the keypad and the display.
+// It uses the "switch ... case" tool to help save time and make the code more efficient.
+// When the function runs, it activates the "if" code when a key is pressed.
+// It then prints that key's assigned value in the serial monitor
+// This function also displays that number on the seven segment display.
+// Using combinations of LEDs that are defined in seperate functions later on in the code,
+// each number is displayed according to the key that is pressed.
+// The buzzer turns on when the "*" key is pressed.
+
+void loop()
+{
+  char keypressed = kpd.getKey();
+  if (keypressed)
+  {
+    Serial.print("Key pressed is ");
+    Serial.println(keypressed);
+    switch (keypressed)
+    {
+      case '1':
+        one();
+        delay(200);
+        none();
+        break;
+      case '2':
+        two();
+        delay(200);
+        none();
+        break;
+      case '3':
+        three();
+        delay(200);
+        none();
+        break;
+      case '4':
+        four();
+        delay(200);
+        none();
+        break;
+      case '5':
+        five();
+        delay(200);
+        none();
+        break;
+      case '6':
+        six();
+        delay(200);
+        none();
+        break;
+      case '7':
+        seven();
+        delay(200);
+        none();
+        break;
+      case '8':
+        eight();
+        delay(200);
+        none();
+        break;
+      case '9':
+        nine();
+        delay(200);
+        none();
+        break;
+      case '0':
+        zero();
+        delay(200);
+        none();
+        break;
+      case 'B':
+        digitalWrite(buzzpin, HIGH);
+        delay(200);
+        digitalWrite(buzzpin, LOW);
+        break;
+    }
+  }
+  if (keypressed = false)
+  {
+    none();
+   }
+}
+
+// This is a function that displays the number "one" on using various LEDs on the seven segment display.
+// It is called in the loop function when its key is pressed on the keypad. 
+
+void one()
+{
+  digitalWrite(E, LOW);
+  digitalWrite(D, LOW);
+  digitalWrite(C, HIGH);
+  digitalWrite(G, LOW);
+  digitalWrite(F, LOW);
+  digitalWrite(A, LOW);
+  digitalWrite(B, HIGH);
+}
+
+// This is a function that displays the number "two" on using various LEDs on the seven segment display.
+// It is called in the loop function when its key is pressed on the keypad. 
+
+void two()
+{
+  digitalWrite(E, HIGH);
+  digitalWrite(D, HIGH);
+  digitalWrite(C, LOW);
+  digitalWrite(G, HIGH);
+  digitalWrite(F, LOW);
+  digitalWrite(A, HIGH);
+  digitalWrite(B, HIGH);
+}
+
+// This is a function that displays the number "three" on using various LEDs on the seven segment display.
+// It is called in the loop function when its key is pressed on the keypad. 
+
+void three()
+{
+  digitalWrite(E, LOW);
+  digitalWrite(D, HIGH);
+  digitalWrite(C, HIGH);
+  digitalWrite(G, HIGH);
+  digitalWrite(F, LOW);
+  digitalWrite(A, HIGH);
+  digitalWrite(B, HIGH);
+}
+
+// This is a function that displays the number "four" on using various LEDs on the seven segment display.
+// It is called in the loop function when its key is pressed on the keypad. 
+
+void four()
+{
+  digitalWrite(E, LOW);
+  digitalWrite(D, LOW);
+  digitalWrite(C, HIGH);
+  digitalWrite(G, HIGH);
+  digitalWrite(F, HIGH);
+  digitalWrite(A, LOW);
+  digitalWrite(B, HIGH);
+}
+
+// This is a function that displays the number "five" on using various LEDs on the seven segment display.
+// It is called in the loop function when its key is pressed on the keypad. 
+
+void five()
+{
+  digitalWrite(E, LOW);
+  digitalWrite(D, HIGH);
+  digitalWrite(C, HIGH);
+  digitalWrite(G, HIGH);
+  digitalWrite(F, HIGH);
+  digitalWrite(A, HIGH);
+  digitalWrite(B, LOW);
+}
+
+// This is a function that displays the number "six" on using various LEDs on the seven segment display.
+// It is called in the loop function when its key is pressed on the keypad. 
+
+void six()
+{
+  digitalWrite(E, HIGH);
+  digitalWrite(D, HIGH);
+  digitalWrite(C, HIGH);
+  digitalWrite(G, HIGH);
+  digitalWrite(F, HIGH);
+  digitalWrite(A, HIGH);
+  digitalWrite(B, LOW);
+}
+
+// This is a function that displays the number "seven" on using various LEDs on the seven segment display.
+// It is called in the loop function when its key is pressed on the keypad. 
+
+void seven()
+{
+  digitalWrite(E, LOW);
+  digitalWrite(D, LOW);
+  digitalWrite(C, HIGH);
+  digitalWrite(G, LOW);
+  digitalWrite(F, LOW);
+  digitalWrite(A, HIGH);
+  digitalWrite(B, HIGH);
+}
+
+// This is a function that displays the number "eight" on using various LEDs on the seven segment display.
+// It is called in the loop function when its key is pressed on the keypad. 
+
+void eight()
+{
+  digitalWrite(E, HIGH);
+  digitalWrite(D, HIGH);
+  digitalWrite(C, HIGH);
+  digitalWrite(G, HIGH);
+  digitalWrite(F, HIGH);
+  digitalWrite(A, HIGH);
+  digitalWrite(B, HIGH);
+}
+
+// This is a function that displays the number "nine" on using various LEDs on the seven segment display.
+// It is called in the loop function when its key is pressed on the keypad. 
+
+void nine()
+{
+  digitalWrite(E, LOW);
+  digitalWrite(D, LOW);
+  digitalWrite(C, HIGH);
+  digitalWrite(G, HIGH);
+  digitalWrite(F, HIGH);
+  digitalWrite(A, HIGH);
+  digitalWrite(B, HIGH);
+}
+
+// This is a function that displays the number "nine" on using various LEDs on the seven segment display.
+// It is called in the loop function when its key is pressed on the keypad. 
+
+void zero()
+{
+  digitalWrite(E, HIGH);
+  digitalWrite(D, HIGH);
+  digitalWrite(C, HIGH);
+  digitalWrite(G, LOW);
+  digitalWrite(F, HIGH);
+  digitalWrite(A, HIGH);
+  digitalWrite(B, HIGH);
+}
+
+// This is a function that turns off all LEDs on the seven segment display.
+// It is called in the loop function after another key is pressed with a 200 millisecond delay. 
+
+void none()
+{
+  digitalWrite(E, LOW);
+  digitalWrite(D, LOW);
+  digitalWrite(C, LOW);
+  digitalWrite(G, LOW);
+  digitalWrite(F, LOW);
+  digitalWrite(A, LOW);
+  digitalWrite(B, LOW);
+}

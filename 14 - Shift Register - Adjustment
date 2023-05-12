@@ -1,0 +1,297 @@
+/*
+  Shift Register - With LCD Enhancement
+
+  By: Vishesh G.
+*/
+
+// To operate the Liquid Crystal Display, we need to "#include" the liquid crystal library:
+#include <LiquidCrystal.h>
+
+// Use integers to establish the pins for the shift register.
+// The IC uses SPI, or serial peripheral interface.
+// This means it uses a data pin, clock pin, and latch pin.
+
+int datapin = 7;
+int clockpin = 8;
+int latchpin = 9;
+
+// Use constant integers to establish the connections for the LCD.
+// Multiple integers can be established in the same command if they are seperated by a comma.
+
+const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+// The information that is sent to the register will be sent through a byte called "data"
+
+byte data = 0;
+
+// Use void setup() to write a function that only runs once.
+// This established the three shift register pins as outputs.
+// This also sets up the LCD as a 16x2 display.
+// This also begins receiving information through the serial monitor.
+
+void setup()
+{
+  pinMode(datapin, OUTPUT);
+  pinMode(clockpin, OUTPUT);
+  pinMode(latchpin, OUTPUT);
+
+  lcd.begin(16, 2);
+
+  Serial.begin(9600);
+}
+
+// Use void loop() to write a function that runs as long as the Arduino has power.
+// This loop function calls multiple functions that are defined later on in the code.
+// Each function that is called creates a different display with the eight LEDs.
+// Each function uses a function called "shiftWrite" that is later defined as well.
+// This loop also drives the LCD, and displays each function as it runs.
+// For the binary counting, the LCD displays each binary number that the LEDs represent.
+
+void loop()
+{
+
+  // The LCD commands below clear the screen, and then write the title of the pattern that the LEDs are displaying.
+  // While the title is on the LCD, the Arduino runs the function "oneAfterAnother();" that is defined later in the code.
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("One After");
+  lcd.setCursor(0, 1);
+  lcd.print("Another");
+
+  oneAfterAnother();
+
+  // The LCD commands below clear the screen, and then write the title of the pattern that the LEDs are displaying.
+  // While the title is on the LCD, the Arduino runs the function "oneOnAtATime();" that is defined later in the code.
+  // Since this pattern is short, a "for" loop is used to run it twice.
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("One On At");
+  lcd.setCursor(0, 1);
+  lcd.print("A Time");
+
+  int x;
+
+  for (x = 0; x <= 1; x++)
+  {
+    oneOnAtATime();
+  }
+
+  // The LCD commands below clear the screen, and then write the title of the pattern that the LEDs are displaying.
+  // While the title is on the LCD, the Arduino runs the function "pingPong();" that is defined later in the code.
+  // Since this pattern is short, a "for" loop is used to run it twice.
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Ping Pong");
+
+  for (x = 0; x <= 1; x++)
+  {
+    pingPong();
+  }
+
+  // The LCD commands below clear the screen, and then write the title of the pattern that the LEDs are displaying.
+  // While the title is on the LCD, the Arduino runs the function "randomLED();" that is defined later in the code.
+  // Since this pattern is short, a "for" loop is used to run it twice.
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Random LEDs");
+
+  for (x = 0; x <= 16; x++)
+  {
+    randomLED();
+  }
+
+  // The LCD commands below clear the screen, and then write the title of the pattern that the LEDs are displaying.
+  // While the title is on the LCD, the Arduino runs the function "marquee();" that is defined later in the code.
+  // Since this pattern is short, a "for" loop is used to run it twice.
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Marquee");
+
+  for (x = 0; x <= 3; x++)
+  {
+    marquee();
+  }
+
+  // The LCD commands below clear the screen, and then write the title of the pattern that the LEDs are displaying.
+  // While the title is on the LCD, the Arduino runs the function "binaryCount();" that is defined later in the code.
+  // Since this pattern is short, a "for" loop is used to run it twice.
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Binary Counting");
+
+  for (x = 0; x <= 255; x++)
+  {
+    binaryCount();
+  }
+}
+
+// The "shiftWrite();" function is used in all other pattern functions.
+// It acts as a "digitalWrite()" function, except it works for the shift register outputs.
+// In this void, the two parameters are the desired pin and the desired state (HIGH or LOW).
+// The "bitWrite" command writes the two parameters in the "data" byte defined earlier.
+// Then, the "shiftOut" command sends the "data" byte to the shift register using the serial and clock pins.
+// Lastly, turning the latch pin on and off "latches" the data to its respective outputs.
+// This quick function allows us to define boolean states for any of the register's eight outputs. 
+
+void shiftWrite(int desiredPin, boolean desiredState)
+
+{
+  bitWrite(data, desiredPin, desiredState);
+
+  shiftOut(datapin, clockpin, MSBFIRST, data);
+
+  digitalWrite(latchpin, HIGH);
+  digitalWrite(latchpin, LOW);
+}
+
+// This is a pattern function. It is called in the loop function.
+// This specific pattern highlights each LED consecutively, and then turns them off in the reverse order. 
+// It uses a "for" loop and an array to turn each LED on and off. 
+// Notice that instead of "digitalWrite();" this function uses "shiftWrite();" to control the LEDs.
+
+void oneAfterAnother()
+{
+  int index;
+  int delayTime = 100;
+
+  for (index = 0; index <= 7; index++)
+  {
+    shiftWrite(index, HIGH);
+    delay(delayTime);
+  }
+
+  for (index = 7; index >= 0; index--)
+  {
+    shiftWrite(index, LOW);
+    delay(delayTime);
+  }
+}
+
+
+// This is a pattern function. It is called in the loop function.
+// This specific pattern highlights each LED consecutively one by one. 
+// It uses a "for" loop and an array to turn each LED on and the previous one off.
+// Notice that instead of "digitalWrite();" this function uses "shiftWrite();" to control the LEDs.
+
+void oneOnAtATime()
+{
+  int index;
+  int delayTime = 100; 
+
+  for (index = 0; index <= 7; index++)
+  {
+    shiftWrite(index, HIGH);  
+    delay(delayTime);      
+    shiftWrite(index, LOW); 
+  }
+}
+
+// This is a pattern function. It is called in the loop function.
+// This specific pattern highlights each LED consecutively one by one, and then runs through them in the opposite direction. 
+// It uses a "for" loop and an array to turn each LED on and the previous one off.
+// Notice that instead of "digitalWrite();" this function uses "shiftWrite();" to control the LEDs.
+
+void pingPong()
+{
+  int index;
+  int delayTime = 100;
+
+  for (index = 0; index <= 7; index++)
+  {
+    shiftWrite(index, HIGH);   
+    delay(delayTime);      
+    shiftWrite(index, LOW);
+  }
+
+  for (index = 7; index >= 0; index--)
+  {
+    shiftWrite(index, HIGH);   
+    delay(delayTime);     
+    shiftWrite(index, LOW); 
+  }
+}
+
+// This is a pattern function. It is called in the loop function.
+// This specific pattern highlights random LEDs. 
+// It uses a randomizer to pick a number between 0-7.
+// Notice that instead of "digitalWrite();" this function uses "shiftWrite();" to control the LEDs.
+
+void randomLED()
+{
+  int index;
+  int delayTime = 100; 
+
+  index = random(8);    // pick a random number between 0 and 7
+
+  shiftWrite(index, HIGH);  // turn LED on
+  delay(delayTime);     // pause to slow down the sequence
+  shiftWrite(index, LOW);   // turn LED off
+}
+
+// This is a pattern function. It is called in the loop function.
+// This specific pattern highlights two LEDs at a time, each of them being 4 LEDs apart. 
+// It uses a "for" loop and an array to turn both LEDs on and the previous ones off.
+// Notice that instead of "digitalWrite();" this function uses "shiftWrite();" to control the LEDs.
+
+void marquee()
+{
+  int index;
+  int delayTime = 200;
+
+  for (index = 0; index <= 3; index++)
+  {
+    shiftWrite(index, HIGH);  
+    shiftWrite(index + 4, HIGH); 
+    delay(delayTime);      
+    shiftWrite(index, LOW); 
+    shiftWrite(index + 4, LOW);
+  }
+}
+
+// This is a pattern function. It is called in the loop function.
+// This specific pattern counts from 0-255 in binary using the LEDs. 
+// It simply sends out the "data" byte and displays it using the latch pin and the register outputs. 
+// It increments the "data" byte every time it runs the program. 
+// Notice that this program DOES NOT use "shiftWrite();" to control the LEDs.
+// This is because we don't control each LED individually; the register does it for us.
+// This program also uses "lcdnum" and "bitnum" to help write the binary number on the LCD.
+// By using "for" loops, the program cycles through each bit and display it in its respective location on the LCD.
+
+void binaryCount()
+{
+  int delayTime = 100; 
+
+  shiftOut(datapin, clockpin, MSBFIRST, data);
+
+  digitalWrite(latchpin, HIGH);
+  digitalWrite(latchpin, LOW);
+
+  int lcdnum = 0;
+  int bitnum = 0;
+
+  lcd.setCursor(12, 1);
+  lcd.print("     ");
+
+  for (lcdnum = 11; lcdnum >= 4; lcdnum--)
+  {
+    lcd.setCursor(lcdnum, 1);
+    for (bitnum = 7; bitnum >= 0; bitnum--)
+    {
+      lcd.print(bitRead(data, bitnum));
+    }
+  }
+
+  lcd.setCursor(12, 1);
+  lcd.print("     ");
+
+  data++;
+
+  delay(delayTime);
+}
